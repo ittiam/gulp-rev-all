@@ -45,6 +45,8 @@ var Revisioner = (function () {
         var qoutes = '\'|"';
 
         function referenceToRegexs(reference) {
+          // console.log(reference.path, this.shouldFileBeRenamed(reference))
+            // if (reference.path.match(/\.ftl$/)) return [];
             var escapedRefPathBase = Tool.path_without_ext(reference.path).replace(/([^0-9a-z])/ig, '\\$1');
             var escapedRefPathExt = Path.extname(reference.path).replace(/([^0-9a-z])/ig, '\\$1');
 
@@ -242,7 +244,10 @@ var Revisioner = (function () {
 
             for (var referenceIndex = 0, referenceGroupLength = referenceGroup.length; referenceIndex < referenceGroupLength; referenceIndex++) {
                 var reference = referenceGroup[referenceIndex];
-                var regExps = this.options.referenceToRegexs(reference);
+                var regExps = [];
+                if (this.shouldFileBeRenamed(reference.file)) {
+                  regExps = this.options.referenceToRegexs(reference);
+                }
 
                 for (var j = 0; j < regExps.length; j++) {
                     if (contents.match(regExps[j])) {
@@ -438,7 +443,7 @@ var Revisioner = (function () {
                 return false;
             }
         }
-        
+
         return true;
 
     };
